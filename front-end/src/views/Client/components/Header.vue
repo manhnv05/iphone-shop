@@ -44,70 +44,37 @@
           </span>
         </router-link>
 
-        <!-- Search Bar (Desktop) -->
-        <div class="hidden lg:flex flex-1 max-w-2xl mx-8">
-          <div class="relative w-full">
-            <input
-              v-model="searchQuery"
-              @input="handleSearch"
-              @focus="showSuggestions = true"
-              @blur="hideSuggestions"
-              type="text"
-              placeholder="Tìm kiếm iPhone, iPad, Mac, Phụ kiện..."
-              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-            />
-            <svg class="w-6 h-6 absolute left-4 top-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+        <!-- Navigation Menu (Desktop) - Moved to center -->
+        <nav class="hidden lg:flex items-center space-x-1">
+          <router-link
+            to="/outlet-sale"
+            class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:bg-red-50"
+            :class="isActiveRoute('/outlet-sale') ? 'text-red-600' : 'text-gray-700'"
+          >
+            <span class="uppercase">OUTLET</span>
+            <span class="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded uppercase">SALE</span>
+          </router-link>
 
-            <!-- Search Suggestions Dropdown -->
-            <Transition name="dropdown">
-              <div v-if="showSuggestions && searchQuery.length >= 2" class="absolute top-full mt-2 w-full bg-white rounded-xl shadow-2xl border border-gray-200 max-h-96 overflow-y-auto z-50">
-                <div class="p-2">
-                  <!-- Popular Searches -->
-                  <div v-if="!searchQuery" class="p-3">
-                    <h4 class="text-xs font-semibold text-gray-500 uppercase mb-2">Tìm kiếm phổ biến</h4>
-                    <div class="flex flex-wrap gap-2">
-                      <button
-                        v-for="term in popularSearches"
-                        :key="term"
-                        @mousedown.prevent="searchQuery = term"
-                        class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
-                      >
-                        {{ term }}
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Search Results -->
-                  <div v-else>
-                    <div
-                      v-for="product in searchResults"
-                      :key="product.id"
-                      @mousedown.prevent="goToProduct(product.id)"
-                      class="flex items-center gap-3 p-3 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors"
-                    >
-                      <img :src="product.duongDanAnh" :alt="product.tenSanPham" class="w-12 h-12 object-cover rounded-lg" />
-                      <div class="flex-1">
-                        <p class="text-sm font-medium text-gray-800 line-clamp-1">{{ product.tenSanPham }}</p>
-                        <p class="text-sm text-red-600 font-semibold">{{ formatPrice(product.giaBan) }}</p>
-                      </div>
-                    </div>
-                    <div v-if="searchResults.length === 0" class="p-6 text-center text-gray-500">
-                      <svg class="w-16 h-16 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <p>Không tìm thấy sản phẩm</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Transition>
-          </div>
-        </div>
+          <router-link
+            v-for="category in categories"
+            :key="category.id"
+            :to="category.path"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:bg-blue-50 uppercase"
+            :class="isActiveRoute(category.path) ? 'text-blue-600' : 'text-gray-700'"
+          >
+            {{ category.name }}
+          </router-link>
+        </nav>
 
         <!-- Right Actions -->
         <div class="flex items-center space-x-4">
+          <!-- Search Icon -->
+          <button @click="toggleSearch" class="p-2 hover:bg-blue-50 rounded-lg transition-colors group">
+            <svg class="w-6 h-6 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+
           <!-- User Menu -->
           <div class="relative" v-if="isLoggedIn">
             <button @click="toggleUserMenu" class="flex items-center space-x-2 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50">
@@ -185,7 +152,7 @@
           </router-link>
 
           <!-- Mobile Menu Toggle -->
-          <button @click="toggleMobileMenu" class="md:hidden p-2 hover:bg-blue-50 rounded-lg transition-colors">
+          <button @click="toggleMobileMenu" class="lg:hidden p-2 hover:bg-blue-50 rounded-lg transition-colors">
             <svg v-if="!showMobileMenu" class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -195,48 +162,104 @@
           </button>
         </div>
       </div>
-
-      <!-- Search Bar (Mobile) -->
-      <div class="lg:hidden mt-4">
-        <div class="relative">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Tìm kiếm sản phẩm..."
-            class="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-full focus:outline-none focus:border-blue-500 transition-colors"
-          />
-          <svg class="w-5 h-5 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-      </div>
     </div>
 
-    <!-- Navigation Bar -->
-    <nav class="hidden md:block bg-gray-50 border-t border-gray-200">
-      <div class="container mx-auto px-4">
-        <div class="flex items-center justify-center space-x-1 py-3">
-          <router-link
-            v-for="category in categories"
-            :key="category.id"
-            :to="category.path"
-            class="px-4 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white hover:shadow-sm"
-            :class="isActiveRoute(category.path) ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-700'"
-          >
-            <span class="flex items-center gap-2">
-              <component :is="category.icon" class="w-5 h-5" />
-              {{ category.name }}
-            </span>
-          </router-link>
+    <!-- Search Overlay -->
+    <Transition name="fade">
+      <div v-if="showSearchOverlay" class="bg-white border-t border-gray-200">
+        <div class="container mx-auto px-4 py-4">
+          <div class="relative max-w-3xl mx-auto">
+            <input
+              v-model="searchQuery"
+              @input="handleSearch"
+              @focus="showSuggestions = true"
+              @blur="hideSuggestions"
+              type="text"
+              placeholder="Tìm kiếm iPhone, iPad, Mac, Phụ kiện..."
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+              ref="searchInput"
+            />
+            <svg class="w-6 h-6 absolute left-4 top-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+
+            <!-- Search Suggestions Dropdown -->
+            <Transition name="dropdown">
+              <div v-if="showSuggestions && searchQuery.length >= 2" class="absolute top-full mt-2 w-full bg-white rounded-xl shadow-2xl border border-gray-200 max-h-96 overflow-y-auto z-50">
+                <div class="p-2">
+                  <!-- Popular Searches -->
+                  <div v-if="!searchQuery" class="p-3">
+                    <h4 class="text-xs font-semibold text-gray-500 uppercase mb-2">Tìm kiếm phổ biến</h4>
+                    <div class="flex flex-wrap gap-2">
+                      <button
+                        v-for="term in popularSearches"
+                        :key="term"
+                        @mousedown.prevent="searchQuery = term"
+                        class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+                      >
+                        {{ term }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Search Results -->
+                  <div v-else>
+                    <div
+                      v-for="product in searchResults"
+                      :key="product.id"
+                      @mousedown.prevent="goToProduct(product.id)"
+                      class="flex items-center gap-3 p-3 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors"
+                    >
+                      <img :src="product.duongDanAnh" :alt="product.tenSanPham" class="w-12 h-12 object-cover rounded-lg" />
+                      <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-800 line-clamp-1">{{ product.tenSanPham }}</p>
+                        <p class="text-sm text-red-600 font-semibold">{{ formatPrice(product.giaBan) }}</p>
+                      </div>
+                    </div>
+                    <div v-if="searchResults.length === 0" class="p-6 text-center text-gray-500">
+                      <svg class="w-16 h-16 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p>Không tìm thấy sản phẩm</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Transition>
+          </div>
         </div>
       </div>
-    </nav>
+    </Transition>
 
     <!-- Mobile Menu -->
     <Transition name="slide">
-      <div v-if="showMobileMenu" class="md:hidden bg-white border-t border-gray-200">
+      <div v-if="showMobileMenu" class="lg:hidden bg-white border-t border-gray-200">
         <div class="container mx-auto px-4 py-4">
+          <!-- Mobile Search -->
+          <div class="mb-4">
+            <div class="relative">
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm sản phẩm..."
+                class="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-full focus:outline-none focus:border-blue-500 transition-colors"
+              />
+              <svg class="w-5 h-5 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
           <nav class="space-y-2">
+            <router-link
+              to="/outlet-sale"
+              @click="showMobileMenu = false"
+              class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+            >
+              <span class="font-semibold uppercase">OUTLET</span>
+              <span class="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded uppercase">SALE</span>
+            </router-link>
+
             <router-link
               v-for="category in categories"
               :key="category.id"
@@ -244,8 +267,7 @@
               @click="showMobileMenu = false"
               class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
             >
-              <component :is="category.icon" class="w-5 h-5" />
-              <span class="font-medium">{{ category.name }}</span>
+              <span class="font-medium uppercase">{{ category.name }}</span>
             </router-link>
           </nav>
 
@@ -261,44 +283,11 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-
-// Icon components (inline for simplicity)
-const IPhoneIcon = {
-  template: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>`
-};
-
-const MacIcon = {
-  template: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`
-};
-
-const IPadIcon = {
-  template: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>`
-};
-
-const WatchIcon = {
-  template: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
-};
-
-const AudioIcon = {
-  template: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 012.828 2.829" /></svg>`
-};
-
-const AccessoryIcon = {
-  template: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>`
-};
 
 export default {
   name: 'ClientHeader',
-  components: {
-    IPhoneIcon,
-    MacIcon,
-    IPadIcon,
-    WatchIcon,
-    AudioIcon,
-    AccessoryIcon,
-  },
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -308,7 +297,9 @@ export default {
     const showSuggestions = ref(false);
     const showUserMenu = ref(false);
     const showMobileMenu = ref(false);
+    const showSearchOverlay = ref(false);
     const searchResults = ref([]);
+    const searchInput = ref(null);
 
     // User data (mock - should come from Vuex)
     const isLoggedIn = ref(true);
@@ -318,12 +309,11 @@ export default {
     const wishlistCount = ref(5);
 
     const categories = ref([
-      { id: 'iphone', name: 'iPhone', path: '/shop', icon: 'IPhoneIcon' },
-      { id: 'mac', name: 'Mac', path: '/shop', icon: 'MacIcon' },
-      { id: 'ipad', name: 'iPad', path: '/shop', icon: 'IPadIcon' },
-      { id: 'watch', name: 'Watch', path: '/shop', icon: 'WatchIcon' },
-      { id: 'audio', name: 'Âm thanh', path: '/shop', icon: 'AudioIcon' },
-      { id: 'accessories', name: 'Phụ kiện', path: '/shop', icon: 'AccessoryIcon' },
+      { id: 'trang-chu', name: 'Trang chủ', path: '/home' },
+      { id: 'cua-hang', name: 'Cửa Hàng', path: '/shop' },
+      { id: 'gioi-thieu', name: 'Giới Thiệu', path: '/about' },
+      { id: 'bai-viet', name: 'Bài viết', path: '/blog' },
+      { id: 'lien-he', name: 'Liên hệ', path: '/contact' },
     ]);
 
     const popularSearches = ref([
@@ -343,6 +333,14 @@ export default {
     });
 
     // Methods
+    const toggleSearch = async () => {
+      showSearchOverlay.value = !showSearchOverlay.value;
+      if (showSearchOverlay.value) {
+        await nextTick();
+        searchInput.value?.focus();
+      }
+    };
+
     const handleSearch = async () => {
       if (searchQuery.value.length >= 2) {
         try {
@@ -367,6 +365,7 @@ export default {
     const goToProduct = (id) => {
       router.push(`/product/${id}`);
       showSuggestions.value = false;
+      showSearchOverlay.value = false;
       searchQuery.value = '';
     };
 
@@ -386,7 +385,7 @@ export default {
     };
 
     const isActiveRoute = (path) => {
-      return route.fullPath.includes(path);
+      return route.path === path || route.path.startsWith(path + '/');
     };
 
     const formatPrice = (price) => {
@@ -401,7 +400,9 @@ export default {
       showSuggestions,
       showUserMenu,
       showMobileMenu,
+      showSearchOverlay,
       searchResults,
+      searchInput,
       isLoggedIn,
       userName,
       userEmail,
@@ -410,6 +411,7 @@ export default {
       wishlistCount,
       categories,
       popularSearches,
+      toggleSearch,
       handleSearch,
       hideSuggestions,
       goToProduct,
@@ -444,6 +446,16 @@ export default {
 .slide-leave-to {
   opacity: 0;
   transform: translateY(-100%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .line-clamp-1 {

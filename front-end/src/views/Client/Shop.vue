@@ -6,7 +6,7 @@
     <div class="bg-white border-b border-gray-200">
       <div class="container mx-auto px-4 py-4">
         <div class="flex items-center text-sm text-gray-600">
-          <router-link to="/home" class="hover:text-blue-600 transition-colors">
+          <router-link to="/" class="hover:text-blue-600 transition-colors">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
@@ -20,22 +20,154 @@
       </div>
     </div>
 
-    <!-- Category Banner -->
-    <div v-if="categoryBanner" class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-      <div class="container mx-auto px-4 py-12">
-        <div class="flex items-center justify-between">
-          <div class="max-w-2xl">
-            <h1 class="text-4xl font-bold mb-4">{{ categoryName }}</h1>
-            <p class="text-blue-100 text-lg">{{ categoryDescription }}</p>
+    <!-- Enhanced Category Banner -->
+    <div class="relative overflow-hidden" :class="getBannerGradient()">
+      <!-- Animated Background Pattern -->
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-blob"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-purple-300 rounded-full mix-blend-overlay filter blur-3xl animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-0 left-1/2 w-96 h-96 bg-pink-300 rounded-full mix-blend-overlay filter blur-3xl animate-blob animation-delay-4000"></div>
+      </div>
+
+      <!-- Decorative Elements -->
+      <div class="absolute inset-0 opacity-20">
+        <svg class="absolute top-10 left-10 w-20 h-20 text-white animate-float" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
+        </svg>
+        <svg class="absolute bottom-10 right-20 w-16 h-16 text-white animate-float animation-delay-2000" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+        </svg>
+      </div>
+
+      <div class="container mx-auto px-4 py-16 relative z-10">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+          <!-- Left Content -->
+          <div class="flex-1 text-white space-y-6 max-w-2xl">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full border border-white/30">
+              <svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span class="text-sm font-semibold">Sản phẩm chính hãng 100%</span>
+            </div>
+
+            <!-- Title -->
+            <div>
+              <h1 class="text-5xl lg:text-6xl font-extrabold mb-4 leading-tight">
+                {{ categoryName }}
+              </h1>
+              <div class="h-1 w-24 bg-gradient-to-r from-yellow-400 to-pink-400 rounded-full"></div>
+            </div>
+
+            <!-- Description -->
+            <p class="text-xl text-blue-100 leading-relaxed">
+              {{ categoryDescription }}
+            </p>
+
+            <!-- Stats -->
+            <div class="flex flex-wrap gap-6 pt-4">
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-3 border border-white/20">
+                <div class="text-3xl font-bold">{{ filteredProducts.length }}</div>
+                <div class="text-sm text-blue-200">Sản phẩm</div>
+              </div>
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-3 border border-white/20">
+                <div class="text-3xl font-bold">100%</div>
+                <div class="text-sm text-blue-200">Chính hãng</div>
+              </div>
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-3 border border-white/20">
+                <div class="text-3xl font-bold">24/7</div>
+                <div class="text-sm text-blue-200">Hỗ trợ</div>
+              </div>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-wrap gap-4 pt-2">
+              <button
+                @click="scrollToProducts"
+                class="bg-white text-blue-700 px-8 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center gap-2"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Khám phá ngay
+              </button>
+              <button class="bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/20 transition-all border border-white/30 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Ưu đãi hot
+              </button>
+            </div>
           </div>
-          <div class="hidden lg:block">
-            <img :src="categoryBanner" :alt="categoryName" class="h-48 object-contain" />
+
+          <!-- Right Image/Illustration -->
+          <div class="flex-shrink-0 lg:w-1/2">
+            <div class="relative">
+              <!-- Main Product Image -->
+              <div class="relative z-10 transform hover:scale-105 transition-transform duration-500">
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl">
+                  <img
+                    :src="getCategoryImage()"
+                    :alt="categoryName"
+                    class="w-full h-auto max-h-96 object-contain drop-shadow-2xl"
+                  />
+                </div>
+              </div>
+
+              <!-- Floating Discount Badge -->
+              <div class="absolute -top-4 -right-4 z-20 animate-bounce">
+                <div class="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-3 rounded-2xl shadow-2xl transform rotate-12">
+                  <div class="text-2xl font-bold">{{ getDiscountPercentage() }}</div>
+                  <div class="text-xs">Hot Deal</div>
+                </div>
+              </div>
+
+              <!-- Floating Features -->
+              <div class="absolute -left-4 top-1/4 hidden lg:block animate-float">
+                <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-gray-100">
+                  <div class="flex items-center gap-3">
+                    <div class="bg-green-100 rounded-full p-2">
+                      <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="text-sm font-bold text-gray-800">Miễn phí vận chuyển</div>
+                      <div class="text-xs text-gray-500">Toàn quốc</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="absolute -right-4 bottom-1/4 hidden lg:block animate-float animation-delay-2000">
+                <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-gray-100">
+                  <div class="flex items-center gap-3">
+                    <div class="bg-blue-100 rounded-full p-2">
+                      <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="text-sm font-bold text-gray-800">Bảo hành</div>
+                      <div class="text-xs text-gray-500">12 tháng</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Wave Divider -->
+      <div class="absolute bottom-0 left-0 w-full">
+        <svg class="w-full h-20" viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <path d="M0,50 C480,100 960,0 1440,50 L1440,100 L0,100 Z" fill="#F9FAFB"/>
+        </svg>
+      </div>
     </div>
 
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 py-8" ref="productsSection">
       <div class="flex flex-col lg:flex-row gap-6">
         <!-- Sidebar Filters -->
         <aside class="lg:w-72 flex-shrink-0">
@@ -396,11 +528,11 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
-import ClientHeader from '../components/ClientHeader.vue';
-import ClientFooter from '../components/ClientFooter.vue';
-import ProductCard from '../components/ProductCard.vue';
-import ProductListItem from '../components/ProductListItem.vue';
-import Pagination from '../components/Pagination.vue';
+import ClientHeader from './components/Header.vue';
+import ClientFooter from './components/Footer.vue';
+import ProductCard from './components/ProductCard.vue';
+import ProductListItem from './components/ProductListItem.vue';
+import Pagination from './components/Pagination.vue';
 
 export default {
   name: 'Shop',
@@ -423,6 +555,7 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = 16;
     const showFilters = ref(false);
+    const productsSection = ref(null);
 
     const filters = ref({
       priceRange: null,
@@ -491,9 +624,9 @@ export default {
         all: 'Tất cả sản phẩm',
         iphone: 'iPhone',
         ipad: 'iPad',
-        mac: 'Mac',
+        mac: 'MacBook',
         watch: 'Apple Watch',
-        audio: 'Âm thanh',
+        audio: 'AirPods & Âm thanh',
         accessories: 'Phụ kiện',
       };
       return categoryMap[category] || 'Sản phẩm';
@@ -501,18 +634,15 @@ export default {
 
     const categoryDescription = computed(() => {
       const descriptions = {
-        iphone: 'Khám phá dòng iPhone mới nhất với công nghệ tiên tiến và thiết kế sang trọng',
-        ipad: 'iPad - Máy tính bảng mạnh mẽ cho công việc và giải trí',
-        mac: 'MacBook & iMac - Hiệu năng vượt trội với chip Apple Silicon',
-        watch: 'Apple Watch - Đồng hồ thông minh theo dõi sức khỏe và thể thao',
-        audio: 'AirPods & Tai nghe chất lượng cao từ Apple',
-        accessories: 'Phụ kiện chính hãng Apple và các thương hiệu uy tín',
+        all: 'Khám phá bộ sưu tập sản phẩm đa dạng với giá tốt nhất thị trường',
+        iphone: 'Khám phá dòng iPhone mới nhất với công nghệ tiên tiến, camera đỉnh cao và thiết kế sang trọng',
+        ipad: 'iPad - Máy tính bảng mạnh mẽ cho công việc và giải trí với màn hình Retina sắc nét',
+        mac: 'MacBook & iMac - Hiệu năng vượt trội với chip Apple Silicon M1/M2/M3',
+        watch: 'Apple Watch - Đồng hồ thông minh theo dõi sức khỏe, thể thao và kết nối hoàn hảo',
+        audio: 'AirPods & Tai nghe chất lượng cao với âm thanh đỉnh cao từ Apple',
+        accessories: 'Phụ kiện chính hãng Apple và các thương hiệu uy tín - Bảo vệ thiết bị của bạn',
       };
-      return descriptions[route.query.category] || 'Sản phẩm chính hãng, giá tốt nhất';
-    });
-
-    const categoryBanner = computed(() => {
-      return 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400&h=300&fit=crop';
+      return descriptions[route.query.category] || 'Sản phẩm chính hãng, giá tốt nhất thị trường';
     });
 
     const activeFiltersCount = computed(() => {
@@ -617,6 +747,61 @@ export default {
     });
 
     // Methods
+    const getCategoryImage = () => {
+      const category = route.query.category || 'all';
+
+      // Sử dụng hình ảnh phù hợp với từng danh mục
+      const images = {
+        iphone: 'https://images.unsplash.com/photo-1678652197831-2d180705cd2c?w=600&h=600&fit=crop', // iPhone 14 Pro
+        ipad: 'https://images.unsplash.com/photo-1585790050230-5dd28404f8db?w=600&h=600&fit=crop', // iPad
+        mac: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=600&fit=crop', // MacBook
+        watch: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600&h=600&fit=crop', // Apple Watch
+        audio: 'https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=600&h=600&fit=crop', // AirPods
+        accessories: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&h=600&fit=crop', // Accessories
+        all: 'https://images.unsplash.com/photo-1611472173362-3f53dbd65d80?w=600&h=600&fit=crop', // Apple Store
+      };
+
+      return images[category] || images.all;
+    };
+
+    const getBannerGradient = () => {
+      const category = route.query.category || 'all';
+
+      const gradients = {
+        iphone: 'bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-900',
+        ipad: 'bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800',
+        mac: 'bg-gradient-to-br from-gray-700 via-gray-800 to-slate-900',
+        watch: 'bg-gradient-to-br from-red-600 via-pink-700 to-rose-800',
+        audio: 'bg-gradient-to-br from-indigo-600 via-blue-700 to-cyan-800',
+        accessories: 'bg-gradient-to-br from-orange-600 via-amber-700 to-yellow-800',
+        all: 'bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800',
+      };
+
+      return gradients[category] || gradients.all;
+    };
+
+    const getDiscountPercentage = () => {
+      const category = route.query.category || 'all';
+
+      const discounts = {
+        iphone: '-25%',
+        ipad: '-20%',
+        mac: '-15%',
+        watch: '-30%',
+        audio: '-35%',
+        accessories: '-40%',
+        all: '-30%',
+      };
+
+      return discounts[category] || '-30%';
+    };
+
+    const scrollToProducts = () => {
+      if (productsSection.value) {
+        productsSection.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
     const fetchProducts = async () => {
       loading.value = true;
       try {
@@ -700,11 +885,15 @@ export default {
       toast,
       categoryName,
       categoryDescription,
-      categoryBanner,
       activeFiltersCount,
       filteredProducts,
       paginatedProducts,
       totalPages,
+      productsSection,
+      getCategoryImage,
+      getBannerGradient,
+      getDiscountPercentage,
+      scrollToProducts,
       toggleFilter,
       clearAllFilters,
       addToCart,
@@ -729,6 +918,34 @@ export default {
 
 .rotate-180 {
   transform: rotate(180deg);
+}
+
+/* Animations */
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
 }
 
 @media (max-width: 1024px) {

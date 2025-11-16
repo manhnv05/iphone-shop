@@ -4,6 +4,11 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomePage from "../views/Client/HomePage.vue";
 import CartPage from "../views/Client/CartPage.vue";
 import CheckoutPage from "../views/Client/CheckoutPage.vue";
+import ShopPage from "../views/Client/Shop.vue";
+import About from "../views/Client/About.vue";
+import Blog from "../views/Client/Blog.vue";
+import Contact from "../views/Client/Contact.vue";
+import OutletSale from "../views/Client/OutletSale.vue";
 
 // Thống kê
 import Dashboard from "../views/ThongKe/AppDashboard.vue";
@@ -57,7 +62,36 @@ const routes: Array<RouteRecordRaw> = [
     component: CheckoutPage,
     meta: { layout: "empty" },
   },
-  
+  {
+    path: "/shop",
+    name: "ShopPage",
+    component: ShopPage,
+    meta: { layout: "empty" },
+  },
+  {
+    path: "/about",
+    name: "AboutPage",
+    component: About,
+    meta: { layout: "empty" },
+  },
+  {
+    path: "/blog",
+    name: "BlogPage",
+    component: Blog,
+    meta: { layout: "empty" },
+  },
+  {
+    path: "/contact",
+    name: "ContactPage",
+    component: Contact,
+    meta: { layout: "empty" },
+  },
+  {
+    path: "/outlet-sale",
+    name: "OutletSalePage",
+    component: OutletSale,
+    meta: { layout: "empty" },
+  },
   // Admin & Other Routes
   {
     path: "/",

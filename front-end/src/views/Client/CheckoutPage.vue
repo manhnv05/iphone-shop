@@ -243,7 +243,8 @@
         </div>
 
         <!-- Right Column - Order Summary -->
-        <div class="lg:col-span-1">
+        <div class="lg:col-span-1 space-y-6">
+          <!-- Order Summary -->
           <div class="bg-white rounded-lg shadow-sm p-6 sticky top-20">
             <h3 class="text-xl font-bold text-gray-800 mb-6">Đơn hàng ({{ cartItems.length }} sản phẩm)</h3>
 
@@ -277,6 +278,101 @@
               </div>
             </div>
 
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-gray-800">Mã giảm giá</h2>
+                <button
+                  @click="showVoucherModal = true"
+                  class="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                >
+                  Xem tất cả
+                </button>
+              </div>
+
+              <!-- Manual Input -->
+              <div class="flex gap-2 mb-4">
+                <input
+                  v-model="promoCode"
+                  type="text"
+                  placeholder="Nhập mã giảm giá"
+                  class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  @keyup.enter="applyPromoCode"
+                />
+                <button
+                  @click="applyPromoCode"
+                  :disabled="!promoCode || applyingPromo"
+                  class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {{ applyingPromo ? 'Đang xử lý...' : 'Áp dụng' }}
+                </button>
+              </div>
+
+              <!-- Applied Voucher -->
+              <div v-if="appliedVoucher" class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg p-3">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-start gap-2 flex-1">
+                    <div class="bg-green-500 text-white p-1.5 rounded-lg">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                      </svg>
+                    </div>
+                    <div class="flex-1">
+                      <div class="flex items-center gap-1 mb-0.5">
+                        <span class="font-bold text-sm text-green-800">{{ appliedVoucher.code }}</span>
+                        <span v-if="appliedVoucher.isBest" class="text-xs bg-yellow-400 text-yellow-900 px-1.5 py-0.5 rounded-full font-bold">
+                        TỐT NHẤT
+                      </span>
+                      </div>
+                      <p class="text-xs text-green-700 mb-1">{{ appliedVoucher.description }}</p>
+                      <p class="text-base font-bold text-green-800">
+                        -{{ formatPrice(appliedVoucher.discountAmount) }}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    @click="removeVoucher"
+                    class="text-red-600 hover:text-red-700 p-1"
+                    title="Xóa mã"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Best Voucher Suggestion -->
+              <div v-else-if="bestVoucher && !appliedVoucher" class="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-lg p-3">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-start gap-2 flex-1">
+                    <div class="bg-yellow-500 text-white p-1.5 rounded-lg flex-shrink-0">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                      </svg>
+                    </div>
+                    <div class="flex-1">
+                      <div class="flex items-center gap-1 mb-0.5">
+                        <span class="font-bold text-sm text-yellow-900">{{ bestVoucher.code }}</span>
+                        <span class="text-xs bg-yellow-400 text-yellow-900 px-1.5 py-0.5 rounded-full font-bold">
+                        TIẾT KIỆM NHẤT
+                      </span>
+                      </div>
+                      <p class="text-xs text-yellow-800 mb-1">{{ bestVoucher.description }}</p>
+                      <p class="text-base font-bold text-yellow-900">
+                        -{{ formatPrice(bestVoucher.discountAmount) }}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    @click="applyBestVoucher"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs whitespace-nowrap flex-shrink-0"
+                  >
+                    Áp dụng
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <!-- Price Summary -->
             <div class="space-y-3 py-4 border-t border-b">
               <div class="flex justify-between text-gray-600">
@@ -288,14 +384,24 @@
                 <span class="font-semibold">{{ shippingFee > 0 ? formatPrice(shippingFee) : 'Miễn phí' }}</span>
               </div>
               <div v-if="discount > 0" class="flex justify-between text-green-600">
-                <span>Giảm giá</span>
-                <span class="font-semibold">-{{ formatPrice(discount) }}</span>
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                  </svg>
+                  Giảm giá
+                </span>
+                <span class="font-bold">-{{ formatPrice(discount) }}</span>
               </div>
             </div>
 
             <div class="flex justify-between items-center py-4">
               <span class="text-lg font-bold text-gray-800">Tổng cộng</span>
-              <span class="text-2xl font-bold text-red-600">{{ formatPrice(total) }}</span>
+              <div class="text-right">
+                <div v-if="discount > 0" class="text-sm text-gray-500 line-through">
+                  {{ formatPrice(subtotal + shippingFee) }}
+                </div>
+                <div class="text-2xl font-bold text-red-600">{{ formatPrice(total) }}</div>
+              </div>
             </div>
 
             <!-- Action Buttons -->
@@ -327,11 +433,77 @@
               </div>
             </div>
           </div>
+
+          <!-- Discount Code Section - MOVED HERE -->
+          
         </div>
       </div>
     </div>
 
     <Footer />
+
+    <!-- Voucher Modal -->
+    <Transition name="modal">
+      <div v-if="showVoucherModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+          <!-- Modal Header -->
+          <div class="flex justify-between items-center p-6 border-b">
+            <h3 class="text-2xl font-bold text-gray-800">Chọn mã giảm giá</h3>
+            <button @click="showVoucherModal = false" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6 overflow-y-auto max-h-[calc(80vh-140px)]">
+            <!-- Best Voucher -->
+            <div v-if="bestVoucher" class="mb-6">
+              <h4 class="text-sm font-bold text-yellow-600 mb-3 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                MÃ TIẾT KIỆM NHẤT
+              </h4>
+              <VoucherCard
+                :voucher="bestVoucher"
+                :is-best="true"
+                :is-applied="appliedVoucher?.code === bestVoucher.code"
+                @apply="selectVoucher(bestVoucher)"
+              />
+            </div>
+
+            <!-- All Vouchers -->
+            <div>
+              <h4 class="text-sm font-bold text-gray-700 mb-3">TẤT CẢ MÃ GIẢM GIÁ</h4>
+              <div class="space-y-3">
+                <VoucherCard
+                  v-for="voucher in availableVouchers.filter(v => v.code !== bestVoucher?.code)"
+                  :key="voucher.code"
+                  :voucher="voucher"
+                  :is-applied="appliedVoucher?.code === voucher.code"
+                  @apply="selectVoucher(voucher)"
+                />
+              </div>
+            </div>
+
+            <!-- Unavailable Vouchers -->
+            <div v-if="unavailableVouchers.length > 0" class="mt-6">
+              <h4 class="text-sm font-bold text-gray-400 mb-3">CHƯA ĐỦ ĐIỀU KIỆN</h4>
+              <div class="space-y-3 opacity-60">
+                <VoucherCard
+                  v-for="voucher in unavailableVouchers"
+                  :key="voucher.code"
+                  :voucher="voucher"
+                  :is-disabled="true"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
 
     <!-- Success Modal -->
     <Transition name="modal">
@@ -373,11 +545,118 @@ import axios from 'axios';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 
+// Voucher Card Component
+const VoucherCard = {
+  name: 'VoucherCard',
+  props: {
+    voucher: Object,
+    isBest: Boolean,
+    isApplied: Boolean,
+    isDisabled: Boolean,
+  },
+  emits: ['apply'],
+  setup(props, { emit }) {
+    const formatPrice = (price) => {
+      return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+      }).format(price);
+    };
+
+    return { formatPrice };
+  },
+  template: `
+    <div
+      :class="[
+        'relative border-2 rounded-xl overflow-hidden transition-all',
+        isApplied ? 'border-green-500 bg-green-50' : 'border-gray-200',
+        isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-blue-300 cursor-pointer',
+        isBest && !isApplied ? 'border-yellow-400 bg-yellow-50' : ''
+      ]"
+      @click="!isDisabled && $emit('apply')"
+    >
+      <!-- Best Badge -->
+      <div v-if="isBest" class="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-bl-lg">
+        TỐT NHẤT
+      </div>
+
+      <!-- Applied Badge -->
+      <div v-if="isApplied" class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
+        ĐÃ CHỌN
+      </div>
+
+      <div class="flex p-4">
+        <!-- Left Icon -->
+        <div class="flex-shrink-0 mr-4">
+          <div :class="[
+            'w-16 h-16 rounded-lg flex items-center justify-center',
+            isBest ? 'bg-yellow-500' : 'bg-blue-500'
+          ]">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1">
+          <div class="flex items-start justify-between mb-2">
+            <div>
+              <h4 class="font-bold text-gray-900 text-lg">{{ voucher.code }}</h4>
+              <p class="text-sm text-gray-600 mt-1">{{ voucher.description }}</p>
+            </div>
+          </div>
+
+          <!-- Discount Amount -->
+          <div class="mb-3">
+            <span class="text-2xl font-black text-red-600">
+              {{ formatPrice(voucher.discountAmount) }}
+            </span>
+          </div>
+
+          <!-- Conditions -->
+          <div class="space-y-1 text-xs text-gray-600">
+            <div v-if="voucher.minOrder" class="flex items-center gap-1">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Đơn tối thiểu {{ formatPrice(voucher.minOrder) }}
+            </div>
+            <div v-if="voucher.maxDiscount" class="flex items-center gap-1">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Giảm tối đa {{ formatPrice(voucher.maxDiscount) }}
+            </div>
+            <div class="flex items-center gap-1">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              HSD: {{ voucher.expiryDate }}
+            </div>
+          </div>
+
+          <!-- Apply Button -->
+          <button
+            v-if="!isDisabled"
+            class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg text-sm transition-colors"
+            :class="isApplied ? 'bg-green-600 hover:bg-green-700' : ''"
+            @click.stop="$emit('apply')"
+          >
+            {{ isApplied ? '✓ Đã áp dụng' : 'Áp dụng' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  `,
+};
+
 export default {
   name: 'Checkout',
   components: {
     Header,
     Footer,
+    VoucherCard,
   },
   setup() {
     const router = useRouter();
@@ -386,6 +665,7 @@ export default {
     const currentStep = ref(1);
     const processing = ref(false);
     const showSuccessModal = ref(false);
+    const showVoucherModal = ref(false);
     const orderCode = ref('');
 
     const customerInfo = ref({
@@ -401,6 +681,75 @@ export default {
 
     const shippingMethod = ref('standard');
     const paymentMethod = ref('cod');
+
+    // Voucher state
+    const promoCode = ref('');
+    const appliedVoucher = ref(null);
+    const applyingPromo = ref(false);
+
+    // Mock vouchers data
+    const allVouchers = ref([
+      {
+        id: 1,
+        code: 'FREESHIP50K',
+        description: 'Miễn phí vận chuyển đơn từ 500k',
+        type: 'percentage',
+        discountPercentage: 0,
+        discountAmount: 50000,
+        minOrder: 500000,
+        maxDiscount: 50000,
+        expiryDate: '31/12/2024',
+        available: true,
+      },
+      {
+        id: 2,
+        code: 'GIAMGIA10',
+        description: 'Giảm 10% cho đơn hàng từ 1 triệu',
+        type: 'percentage',
+        discountPercentage: 10,
+        discountAmount: 0,
+        minOrder: 1000000,
+        maxDiscount: 500000,
+        expiryDate: '31/12/2024',
+        available: true,
+      },
+      {
+        id: 3,
+        code: 'GIAM200K',
+        description: 'Giảm ngay 200k cho đơn từ 3 triệu',
+        type: 'fixed',
+        discountPercentage: 0,
+        discountAmount: 200000,
+        minOrder: 3000000,
+        maxDiscount: 200000,
+        expiryDate: '31/12/2024',
+        available: true,
+      },
+      {
+        id: 4,
+        code: 'BLACKFRIDAY',
+        description: 'Giảm 15% tối đa 1 triệu cho đơn từ 5 triệu',
+        type: 'percentage',
+        discountPercentage: 15,
+        discountAmount: 0,
+        minOrder: 5000000,
+        maxDiscount: 1000000,
+        expiryDate: '30/11/2024',
+        available: true,
+      },
+      {
+        id: 5,
+        code: 'MEGA500K',
+        description: 'Giảm 500k cho đơn hàng từ 10 triệu',
+        type: 'fixed',
+        discountPercentage: 0,
+        discountAmount: 500000,
+        minOrder: 10000000,
+        maxDiscount: 500000,
+        expiryDate: '31/12/2024',
+        available: false, // Not eligible
+      },
+    ]);
 
     const provinces = ref([
       { code: 'HN', name: 'Hà Nội' },
@@ -474,7 +823,9 @@ export default {
       },
     ]);
 
-    const isLoggedIn = computed(() => (store && store.getters ? store.getters['auth/isLoggedIn'] : false));
+    const isLoggedIn = computed(() => {
+      return store && store.getters ? store.getters['auth/isLoggedIn'] : false;
+    });
 
     const subtotal = computed(() => {
       return cartItems.value.reduce((sum, item) => {
@@ -483,14 +834,63 @@ export default {
       }, 0);
     });
 
+    // Calculate discount based on applied voucher
+    const discount = computed(() => {
+      if (!appliedVoucher.value) return 0;
+
+      const voucher = appliedVoucher.value;
+
+      // Check if eligible
+      if (voucher.minOrder && subtotal.value < voucher.minOrder) {
+        return 0;
+      }
+
+      if (voucher.type === 'percentage') {
+        const calculated = subtotal.value * voucher.discountPercentage / 100;
+        return Math.min(calculated, voucher.maxDiscount || calculated);
+      } else {
+        return voucher.discountAmount;
+      }
+    });
+
+    // Available vouchers (eligible)
+    const availableVouchers = computed(() => {
+      return allVouchers.value
+        .filter(v => !v.minOrder || subtotal.value >= v.minOrder)
+        .map(v => {
+          let discountAmount = 0;
+          if (v.type === 'percentage') {
+            const calculated = subtotal.value * v.discountPercentage / 100;
+            discountAmount = Math.min(calculated, v.maxDiscount || calculated);
+          } else {
+            discountAmount = v.discountAmount;
+          }
+          return { ...v, discountAmount };
+        })
+        .sort((a, b) => b.discountAmount - a.discountAmount);
+    });
+
+    // Unavailable vouchers (not eligible)
+    const unavailableVouchers = computed(() => {
+      return allVouchers.value
+        .filter(v => v.minOrder && subtotal.value < v.minOrder)
+        .map(v => ({
+          ...v,
+          discountAmount: v.type === 'percentage'
+            ? v.minOrder * v.discountPercentage / 100
+            : v.discountAmount
+        }));
+    });
+
+    // Best voucher (highest discount)
+    const bestVoucher = computed(() => {
+      return availableVouchers.value.length > 0 ? availableVouchers.value[0] : null;
+    });
+
     const shippingFee = computed(() => {
       if (subtotal.value >= 5000000) return 0;
       const method = shippingMethods.value.find(m => m.id === shippingMethod.value);
       return method ? method.fee : 0;
-    });
-
-    const discount = computed(() => {
-      return 0; // Calculate discount if any
     });
 
     const total = computed(() => {
@@ -505,7 +905,6 @@ export default {
     };
 
     const loadDistricts = () => {
-      // Mock data - should call API
       districts.value = [
         { code: 'D1', name: 'Quận 1' },
         { code: 'D2', name: 'Quận 2' },
@@ -517,7 +916,6 @@ export default {
     };
 
     const loadWards = () => {
-      // Mock data - should call API
       wards.value = [
         { code: 'W1', name: 'Phường 1' },
         { code: 'W2', name: 'Phường 2' },
@@ -526,8 +924,54 @@ export default {
       customerInfo.value.ward = '';
     };
 
+    // Apply promo code manually
+    const applyPromoCode = () => {
+      if (!promoCode.value) return;
+
+      applyingPromo.value = true;
+
+      setTimeout(() => {
+        const voucher = allVouchers.value.find(
+          v => v.code.toUpperCase() === promoCode.value.toUpperCase()
+        );
+
+        if (voucher) {
+          if (voucher.minOrder && subtotal.value < voucher.minOrder) {
+            alert(`Đơn hàng tối thiểu ${formatPrice(voucher.minOrder)} để sử dụng mã này`);
+          } else {
+            appliedVoucher.value = voucher;
+            showVoucherModal.value = false;
+          }
+        } else {
+          alert('Mã giảm giá không hợp lệ');
+        }
+
+        applyingPromo.value = false;
+      }, 500);
+    };
+
+    // Apply best voucher automatically
+    const applyBestVoucher = () => {
+      if (bestVoucher.value) {
+        appliedVoucher.value = bestVoucher.value;
+        promoCode.value = bestVoucher.value.code;
+      }
+    };
+
+    // Select voucher from modal
+    const selectVoucher = (voucher) => {
+      appliedVoucher.value = voucher;
+      promoCode.value = voucher.code;
+      showVoucherModal.value = false;
+    };
+
+    // Remove voucher
+    const removeVoucher = () => {
+      appliedVoucher.value = null;
+      promoCode.value = '';
+    };
+
     const handleCheckout = async () => {
-      // Validate form
       if (!customerInfo.value.fullName || !customerInfo.value.phone || !customerInfo.value.email) {
         alert('Vui lòng điền đầy đủ thông tin');
         return;
@@ -536,29 +980,22 @@ export default {
       processing.value = true;
 
       try {
-        // Call API to create order
         const orderData = {
           customer: customerInfo.value,
           items: cartItems.value,
           shippingMethod: shippingMethod.value,
           paymentMethod: paymentMethod.value,
+          voucher: appliedVoucher.value,
           subtotal: subtotal.value,
           shippingFee: shippingFee.value,
           discount: discount.value,
           total: total.value,
         };
 
-        // Mock API call
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        // Generate order code
         orderCode.value = 'DH' + Date.now();
-
-        // Show success modal
         showSuccessModal.value = true;
-
-        // Clear cart
-        // store.dispatch('cart/clearCart');
       } catch (error) {
         console.error('Checkout error:', error);
         alert('Có lỗi xảy ra. Vui lòng thử lại!');
@@ -577,10 +1014,18 @@ export default {
       currentStep,
       processing,
       showSuccessModal,
+      showVoucherModal,
       orderCode,
       customerInfo,
       shippingMethod,
       paymentMethod,
+      promoCode,
+      appliedVoucher,
+      applyingPromo,
+      allVouchers,
+      availableVouchers,
+      unavailableVouchers,
+      bestVoucher,
       provinces,
       districts,
       wards,
@@ -595,6 +1040,10 @@ export default {
       formatPrice,
       loadDistricts,
       loadWards,
+      applyPromoCode,
+      applyBestVoucher,
+      selectVoucher,
+      removeVoucher,
       handleCheckout,
     };
   },

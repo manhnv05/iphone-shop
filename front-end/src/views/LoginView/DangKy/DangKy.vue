@@ -1,101 +1,355 @@
 <template>
   <ToastNotification ref="toastRef" />
 
-  <div class="flex items-center justify-center h-screen px-6 bg-gradient-to-r from-gray-100 to-gray-300">
-    <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
-      <div class="flex items-center justify-center mb-6">
-        <img class="logo" src="../../../assets/Logo_Mobile_World_vector.png" alt="Logo">
+  <div class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md">
+      <!-- Logo / Brand -->
+      <div class="text-center mb-8">
+<!--        <div class="flex justify-center mb-4">-->
+<!--          <div class="bg-gradient-to-br from-orange-500 to-red-600 p-4 rounded-2xl shadow-lg">-->
+<!--            <img class="w-12 h-12" src="../../../assets/Logo_Mobile_World_vector.png" alt="Logo">-->
+<!--          </div>-->
+<!--        </div>-->
+        <h1 class="text-3xl font-black text-gray-900 mb-2">TopZone</h1>
+        <p class="text-gray-600">Tạo tài khoản mới</p>
       </div>
 
-      <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">Đăng Ký Tài Khoản</h2>
-
-      <form @submit.prevent>
-        <!-- Tên đăng nhập -->
-        <label class="block mb-4">
-          <span class="text-sm font-medium text-gray-700">Tên đăng nhập</span>
-          <input v-model="taikhoan.tenDangNhap" type="text"
-                 class="block w-full mt-1 px-4 py-2 bg-gray-50 border border-gray-300 rounded-md focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 transition duration-200"
-                 :class="{ 'border-red-500': errors.tenDangNhap }"
-                 placeholder="Nhập Tên đăng nhập của bạn" />
-          <span v-if="errors.tenDangNhap" class="text-xs text-red-500 mt-1">{{ errors.tenDangNhap }}</span>
-        </label>
-
-        <!-- Email -->
-        <label class="block mb-4 relative">
-          <span class="text-sm font-medium text-gray-700">Email</span>
-          <div class="relative">
-            <input v-model="taikhoan.email" type="email"
-                   class="block w-full mt-1 px-4 py-2 bg-gray-50 border border-gray-300 rounded-md focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 transition duration-200 pr-24"
-                   :class="{ 'border-red-500': errors.email }"
-                   placeholder="Nhập email của bạn" />
-            <button type="button" @click="sendOTP"
-                    class="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 text-sm font-medium text-white bg-orange-600 rounded-md hover:bg-orange-700 transition duration-200">
-              Gửi mã
-            </button>
-          </div>
-          <span v-if="errors.email" class="text-xs text-red-500 mt-1">{{ errors.email }}</span>
-        </label>
-
-        <!-- Mã xác nhận -->
-        <label class="block mb-4">
-          <span class="text-sm font-medium text-gray-700">Mã xác nhận</span>
-          <input v-model="otp" type="text"
-                 class="block w-full mt-1 px-4 py-2 bg-gray-50 border border-gray-300 rounded-md focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 transition duration-200"
-                 :class="{ 'border-red-500': errors.otp }"
-                 placeholder="Nhập mã xác nhận từ email" />
-          <span v-if="errors.otp" class="text-xs text-red-500 mt-1">{{ errors.otp }}</span>
-        </label>
-
-        <!-- Mật khẩu -->
-        <label class="block mb-6 relative">
-          <span class="text-sm font-medium text-gray-700">Mật khẩu</span>
-          <input v-model="taikhoan.matKhau" :type="showPassword ? 'text' : 'password'"
-                 class="block w-full mt-1 px-4 py-2 bg-gray-50 border border-gray-300 rounded-md focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 transition duration-200"
-                 :class="{ 'border-red-500': errors.matKhau }"
-                 placeholder="Nhập mật khẩu" />
-          <span class="absolute right-3 top-10 cursor-pointer eye-icon" @click="togglePassword">
-            <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-          </span>
-          <span v-if="errors.matKhau" class="text-xs text-red-500 mt-1">{{ errors.matKhau }}</span>
-        </label>
-
-        <!-- Xác nhận mật khẩu -->
-        <label class="block mb-6 relative">
-          <span class="text-sm font-medium text-gray-700">Xác nhận mật khẩu</span>
-          <input v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
-                 class="block w-full mt-1 px-4 py-2 bg-gray-50 border border-gray-300 rounded-md focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 transition duration-200"
-                 :class="{ 'border-red-500': errors.confirmPassword }"
-                 placeholder="Xác nhận mật khẩu" />
-          <span class="absolute right-3 top-10 cursor-pointer eye-icon" @click="toggleConfirmPassword">
-            <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-          </span>
-          <span v-if="errors.confirmPassword" class="text-xs text-red-500 mt-1">{{ errors.confirmPassword }}</span>
-        </label>
-
-        <div>
-          <button type="submit" @click="AddTK"
-                  class="w-full px-4 py-3 text-sm font-medium text-white bg-orange-500 rounded-md hover:bg-orange-600 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-50 transition duration-200">
-            Đăng Ký
-          </button>
+      <!-- Register Card -->
+      <div class="bg-white rounded-2xl shadow-2xl p-8 border-0">
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">Đăng ký tài khoản</h2>
+          <p class="text-gray-600 text-sm">Điền thông tin để tạo tài khoản mới</p>
         </div>
-      </form>
 
-      <p class="mt-4 text-center text-sm text-gray-600">
-        Đã có tài khoản?
-        <router-link to="/" class="text-orange-500 hover:underline">Đăng nhập</router-link>
+        <!-- Social Register Buttons -->
+       
+
+        <!-- Divider -->
+        
+
+        <form @submit.prevent="AddTK" class="space-y-4">
+          <!-- Tên đăng nhập -->
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              Tên đăng nhập <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <input
+                v-model="taikhoan.tenDangNhap"
+                type="text"
+                placeholder="Nhập tên đăng nhập"
+                class="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm"
+                :class="{ 'border-red-500 focus:ring-red-500': errors.tenDangNhap }"
+              />
+            </div>
+            <transition name="fade">
+              <span v-if="errors.tenDangNhap" class="text-xs text-red-500 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ errors.tenDangNhap }}
+              </span>
+            </transition>
+          </div>
+
+          <!-- Email -->
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              Email <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <input
+                v-model="taikhoan.email"
+                type="email"
+                placeholder="Nhập email của bạn"
+                class="w-full pl-10 pr-24 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm"
+                :class="{ 'border-red-500 focus:ring-red-500': errors.email }"
+              />
+              <button
+                type="button"
+                @click="sendOTP"
+                :disabled="otpSending"
+                class="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1.5 text-xs font-bold text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ otpSending ? 'Đang gửi...' : otpSent ? 'Gửi lại' : 'Gửi mã' }}
+              </button>
+            </div>
+            <transition name="fade">
+              <span v-if="errors.email" class="text-xs text-red-500 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ errors.email }}
+              </span>
+            </transition>
+            <transition name="fade">
+              <div v-if="otpSent && !errors.email" class="flex items-center gap-1 text-xs text-green-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Mã OTP đã được gửi đến email của bạn
+              </div>
+            </transition>
+          </div>
+
+          <!-- Mã xác nhận -->
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              Mã xác nhận <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
+              <input
+                v-model="otp"
+                type="text"
+                placeholder="Nhập mã 6 số từ email"
+                maxlength="6"
+                class="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm tracking-widest font-semibold"
+                :class="{ 'border-red-500 focus:ring-red-500': errors.otp }"
+              />
+            </div>
+            <transition name="fade">
+              <span v-if="errors.otp" class="text-xs text-red-500 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ errors.otp }}
+              </span>
+            </transition>
+          </div>
+
+          <!-- Mật khẩu -->
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              Mật khẩu <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <input
+                v-model="taikhoan.matKhau"
+                :type="showPassword ? 'text' : 'password'"
+                placeholder="Nhập mật khẩu"
+                class="w-full pl-10 pr-12 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm"
+                :class="{ 'border-red-500 focus:ring-red-500': errors.matKhau }"
+              />
+              <button
+                type="button"
+                @click="togglePassword"
+                class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              </button>
+            </div>
+            <transition name="fade">
+              <span v-if="errors.matKhau" class="text-xs text-red-500 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ errors.matKhau }}
+              </span>
+            </transition>
+
+            <!-- Password Strength Indicator -->
+            <div v-if="taikhoan.matKhau" class="space-y-1">
+              <div class="flex gap-1">
+                <div class="h-1 flex-1 rounded-full transition-all" :class="passwordStrength >= 1 ? 'bg-red-500' : 'bg-gray-200'"></div>
+                <div class="h-1 flex-1 rounded-full transition-all" :class="passwordStrength >= 2 ? 'bg-orange-500' : 'bg-gray-200'"></div>
+                <div class="h-1 flex-1 rounded-full transition-all" :class="passwordStrength >= 3 ? 'bg-yellow-500' : 'bg-gray-200'"></div>
+                <div class="h-1 flex-1 rounded-full transition-all" :class="passwordStrength >= 4 ? 'bg-green-500' : 'bg-gray-200'"></div>
+              </div>
+              <p class="text-xs" :class="{
+                'text-red-500': passwordStrength === 1,
+                'text-orange-500': passwordStrength === 2,
+                'text-yellow-500': passwordStrength === 3,
+                'text-green-500': passwordStrength === 4
+              }">
+                {{ passwordStrengthText }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Xác nhận mật khẩu -->
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              Xác nhận mật khẩu <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <input
+                v-model="confirmPassword"
+                :type="showConfirmPassword ? 'text' : 'password'"
+                placeholder="Nhập lại mật khẩu"
+                class="w-full pl-10 pr-12 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm"
+                :class="{ 'border-red-500 focus:ring-red-500': errors.confirmPassword }"
+              />
+              <button
+                type="button"
+                @click="toggleConfirmPassword"
+                class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg v-if="!showConfirmPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              </button>
+            </div>
+            <transition name="fade">
+              <span v-if="errors.confirmPassword" class="text-xs text-red-500 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ errors.confirmPassword }}
+              </span>
+            </transition>
+            <transition name="fade">
+              <div v-if="confirmPassword && taikhoan.matKhau === confirmPassword && !errors.confirmPassword" class="flex items-center gap-1 text-xs text-green-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Mật khẩu khớp
+              </div>
+            </transition>
+          </div>
+
+          <!-- Terms & Conditions -->
+          <div class="flex items-start gap-2 pt-2">
+            <input
+              v-model="acceptTerms"
+              type="checkbox"
+              id="terms"
+              class="w-4 h-4 mt-0.5 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+            />
+            <label for="terms" class="text-xs text-gray-600">
+              Tôi đồng ý với
+              <a href="#" class="text-orange-600 hover:underline font-semibold">Điều khoản dịch vụ</a>
+              và
+              <a href="#" class="text-orange-600 hover:underline font-semibold">Chính sách bảo mật</a>
+              của TopZone
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            :disabled="loading || !acceptTerms"
+            class="w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-lg hover:from-orange-600 hover:to-red-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 font-bold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <span v-if="!loading">Đăng ký</span>
+            <span v-else>Đang xử lý...</span>
+            <svg v-if="!loading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+
+          <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center">
+              <span class="w-full border-t border-gray-200" />
+            </div>
+            <div class="relative flex justify-center text-xs uppercase">
+            <span class="bg-white px-2 text-gray-500 font-semibold">
+              Hoặc đăng ký với
+            </span>
+            </div>
+          </div>
+
+
+          <div class="space-y-3 mb-6">
+            <!-- Google Register Button -->
+            <button
+              type="button"
+              @click="registerWithGoogle"
+              class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 transition-all font-semibold text-gray-700 hover:border-gray-300"
+            >
+              <svg class="w-5 h-5" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                />
+              </svg>
+              Đăng ký với Google
+            </button>
+
+            <!-- Facebook Register Button -->
+            <!--          <button-->
+            <!--            type="button"-->
+            <!--            @click="registerWithFacebook"-->
+            <!--            class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 transition-all font-semibold text-gray-700 hover:border-gray-300"-->
+            <!--          >-->
+            <!--            <svg class="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">-->
+            <!--              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />-->
+            <!--            </svg>-->
+            <!--            Đăng ký với Facebook-->
+            <!--          </button>-->
+          </div>
+          
+          
+        </form>
+
+        <!-- Login Link -->
+        <div class="mt-6 text-center text-sm">
+          <span class="text-gray-600">Đã có tài khoản? </span>
+          <router-link to="/" class="text-orange-600 hover:text-orange-700 font-bold transition-colors">
+            Đăng nhập ngay
+          </router-link>
+        </div>
+      </div>
+
+      <!-- Help Text -->
+      <p class="text-center text-xs text-gray-500 mt-6">
+        Bạn cần hỗ trợ? Liên hệ
+        <a href="#" class="text-orange-600 hover:underline font-semibold">1900 xxxx</a>
+        hoặc
+        <a href="#" class="text-orange-600 hover:underline font-semibold">support@topzone.vn</a>
       </p>
     </div>
   </div>
 
-  <ConfirmModal :show="showConfirmModal" :message="'Bạn có muốn chuyển sang trang đăng nhập không?'"
-                @confirm="chuyentrang" @cancel="showConfirmModal = false" />
+  <ConfirmModal
+    :show="showConfirmModal"
+    :message="'Bạn có muốn chuyển sang trang đăng nhập không?'"
+    @confirm="chuyentrang"
+    @cancel="showConfirmModal = false"
+  />
 </template>
 
 <script setup lang="ts">
 import axios from "axios";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import ToastNotification  from "@/components/ToastNotification.vue";
+import ToastNotification from "@/components/ToastNotification.vue";
 import ConfirmModal from "@/components/ConfirmModal.vue";
 
 const showConfirmModal = ref(false);
@@ -106,8 +360,11 @@ const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 const confirmPassword = ref('');
 const otp = ref('');
+const loading = ref(false);
+const otpSending = ref(false);
+const otpSent = ref(false);
+const acceptTerms = ref(false);
 
-// Biến lưu lỗi
 const errors = ref({
   tenDangNhap: '',
   email: '',
@@ -123,6 +380,25 @@ const taikhoan = ref({
   matKhau: '',
 });
 
+// Password strength calculator
+const passwordStrength = computed(() => {
+  const password = taikhoan.value.matKhau;
+  if (!password) return 0;
+
+  let strength = 0;
+  if (password.length >= 8) strength++;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+  if (/\d/.test(password)) strength++;
+  if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+  return strength;
+});
+
+const passwordStrengthText = computed(() => {
+  const texts = ['', 'Yếu', 'Trung bình', 'Mạnh', 'Rất mạnh'];
+  return texts[passwordStrength.value];
+});
+
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
@@ -135,10 +411,25 @@ const chuyentrang = () => {
   router.push({ path: '/' });
 };
 
-// Hàm kiểm tra và gán lỗi
+const registerWithGoogle = () => {
+  toastRef.value.kshowToast('info', 'Chức năng đang phát triển', 'Đăng ký Google sẽ sớm có mặt');
+
+  // TODO: Implement Google OAuth Registration
+  // Example:
+  // window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+};
+
+const registerWithFacebook = () => {
+  toastRef.value.kshowToast('info', 'Chức năng đang phát triển', 'Đăng ký Facebook sẽ sớm có mặt');
+
+  // TODO: Implement Facebook OAuth Registration
+  // Example:
+  // window.location.href = 'http://localhost:8080/oauth2/authorization/facebook';
+};
+
 function checktk() {
   let isValid = true;
-  errors.value = { tenDangNhap: '', email: '', otp: '', matKhau: '', confirmPassword: '' }; // Reset lỗi
+  errors.value = { tenDangNhap: '', email: '', otp: '', matKhau: '', confirmPassword: '' };
 
   if (!taikhoan.value.tenDangNhap.trim()) {
     errors.value.tenDangNhap = 'Tên đăng nhập không được để trống!';
@@ -154,6 +445,9 @@ function checktk() {
   if (!taikhoan.value.matKhau.trim()) {
     errors.value.matKhau = 'Mật khẩu không được để trống!';
     isValid = false;
+  } else if (taikhoan.value.matKhau.length < 6) {
+    errors.value.matKhau = 'Mật khẩu phải có ít nhất 6 ký tự!';
+    isValid = false;
   }
   if (!confirmPassword.value.trim()) {
     errors.value.confirmPassword = 'Xác nhận mật khẩu không được để trống!';
@@ -167,10 +461,10 @@ function checktk() {
   return isValid;
 }
 
-// Hàm gửi OTP
 async function sendOTP() {
-  errors.value.tenDangNhap = ''; 
-  errors.value.email = ''; 
+  errors.value.tenDangNhap = '';
+  errors.value.email = '';
+
   if (!taikhoan.value.tenDangNhap.trim()) {
     errors.value.tenDangNhap = 'Tên đăng nhập không được để trống!';
     return;
@@ -184,6 +478,8 @@ async function sendOTP() {
     return;
   }
 
+  otpSending.value = true;
+
   try {
     const response = await axios.post('http://localhost:8080/tai-khoan/requestOtp', {
       email: taikhoan.value.email,
@@ -192,6 +488,8 @@ async function sendOTP() {
     }, {
       headers: { 'Content-Type': 'application/json' },
     });
+
+    otpSent.value = true;
     toastRef.value.kshowToast('success', response.data);
   } catch (error) {
     const errorMsg = error.response?.data || 'Lỗi khi gửi OTP!';
@@ -200,12 +498,13 @@ async function sendOTP() {
     } else if (errorMsg.includes("Email")) {
       errors.value.email = errorMsg;
     } else {
-      errors.value.email = errorMsg;
+      toastRef.value.kshowToast('error', errorMsg);
     }
+  } finally {
+    otpSending.value = false;
   }
 }
 
-// Hàm đăng ký
 async function AddTK() {
   if (!checktk()) {
     return;
@@ -214,6 +513,8 @@ async function AddTK() {
     errors.value.otp = 'Vui lòng nhập mã OTP!';
     return;
   }
+
+  loading.value = true;
 
   const requestData = {
     tenDangNhap: taikhoan.value.tenDangNhap,
@@ -239,23 +540,26 @@ async function AddTK() {
     } else {
       errors.value.otp = errorMsg;
     }
+    toastRef.value.kshowToast('error', errorMsg);
+  } finally {
+    loading.value = false;
   }
 }
 </script>
 
 <style scoped>
-.logo {
-  max-width: 100%;
-  width: 60%;
-  height: auto;
+input:focus {
+  outline: none;
 }
 
-.eye-icon {
-  opacity: 0.5;
-  transition: opacity 0.2s ease;
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
 }
 
-.eye-icon:hover {
-  opacity: 1;
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>

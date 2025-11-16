@@ -41,7 +41,24 @@ import UpdateNhanVien from "@/views/AccountType/UpdateNhanVien.vue";
 import UpdateCustmer from "@/views/AccountType/UpdateCustmer.vue";
 import UpdateMk from "@/views/LoginView/QuenMk/UpdateMk.vue";
 
-// ... (other admin imports)
+// Products
+import SanPham from "@/views/Products/SanPham/SanPham.vue";
+import NhaSanXuat from "@/views/Products/Manufacturer/Manufacturer.vue";
+import CumCamera from "@/views/Products/CameraSanPham/CumCamera.vue";
+import CongNgheManHinh from "@/views/Products/Screen/CongNgheMH.vue";
+import HoTroCongNgheSac from "@/views/Products/Sac/HoTroCongNgheSac.vue";
+import Ram from "@/views/Products/MemorySanPham/RamSanPham.vue";
+import BoNhoTrong from "@/views/Products/MemorySanPham/BoNhoTrong.vue";
+import BoNhoNgoai from "@/views/Products/MemorySanPham/BoNhoNgoai.vue";
+import Cpu from "@/views/Products/Chip/CPU.vue";
+import Gpu from "@/views/Products/Chip/GPU.vue";
+import CongNgheMang from "@/views/Products/Other/CongNgheMang.vue";
+import HeDieuHanh from "@/views/Products/Other/HeDieuHanh.vue";
+import KhangNuocBui from "@/views/Products/Other/KhangBuiNuoc.vue";
+import MauSac from "@/views/Products/Other/MauSac.vue";
+import Pin from "@/views/Products/Other/PinSanPham.vue";
+import Sim from "@/views/Products/Other/SimSanPham.vue";
+import ThietKe from "@/views/Products/Other/ThietKe.vue";
 
 const routes: Array<RouteRecordRaw> = [
   // Client Routes
@@ -229,12 +246,24 @@ const routes: Array<RouteRecordRaw> = [
     component: UpdateCustmer,
     meta: { breadcrumb: ["Tài khoản", "Khách hàng", "Cập nhật khách hàng"] },
   },
-  {
-    path: "/products",
-    name: "SanPham",
-    component: () => import("@/views/Products/SanPham/SanPham.vue"),
-    meta: { breadcrumb: ["Sản phẩm"] },
-  },
+  // Product Routes
+  { path: "/products", name: "products", component: SanPham, meta: { breadcrumb: ["Sản phẩm", "Danh sách sản phẩm"] } },
+  { path: "/manufacturer", name: "manufacturer", component: NhaSanXuat, meta: { breadcrumb: ["Sản phẩm", "Nhà sản xuất"] } },
+  { path: "/camera-module", name: "cameraModule", component: CumCamera, meta: { breadcrumb: ["Sản phẩm", "Cụm Camera"] } },
+  { path: "/screens/technology", name: "screenTechnology", component: CongNgheManHinh, meta: { breadcrumb: ["Sản phẩm", "Công nghệ màn hình"] } },
+  { path: "/charging/tech-support", name: "chargingTechSupport", component: HoTroCongNgheSac, meta: { breadcrumb: ["Sản phẩm", "Hỗ trợ sạc"] } },
+  { path: "/ram", name: "ram", component: Ram, meta: { breadcrumb: ["Sản phẩm", "RAM"] } },
+  { path: "/internal-storage", name: "internalStorage", component: BoNhoTrong, meta: { breadcrumb: ["Sản phẩm", "Bộ nhớ trong"] } },
+  { path: "/external-storage", name: "externalStorage", component: BoNhoNgoai, meta: { breadcrumb: ["Sản phẩm", "Bộ nhớ ngoài"] } },
+  { path: "/cpu", name: "cpu", component: Cpu, meta: { breadcrumb: ["Sản phẩm", "CPU"] } },
+  { path: "/gpu", name: "gpu", component: Gpu, meta: { breadcrumb: ["Sản phẩm", "GPU"] } },
+  { path: "/network-technology", name: "networkTechnology", component: CongNgheMang, meta: { breadcrumb: ["Sản phẩm", "Công nghệ mạng"] } },
+  { path: "/operating-system", name: "operatingSystem", component: HeDieuHanh, meta: { breadcrumb: ["Sản phẩm", "Hệ điều hành"] } },
+  { path: "/dust-water-resistance", name: "dustWaterResistance", component: KhangNuocBui, meta: { breadcrumb: ["Sản phẩm", "Kháng bụi/nước"] } },
+  { path: "/color", name: "color", component: MauSac, meta: { breadcrumb: ["Sản phẩm", "Màu sắc"] } },
+  { path: "/battery", name: "battery", component: Pin, meta: { breadcrumb: ["Sản phẩm", "Pin"] } },
+  { path: "/sim", name: "sim", component: Sim, meta: { breadcrumb: ["Sản phẩm", "SIM"] } },
+  { path: "/design", name: "design", component: ThietKe, meta: { breadcrumb: ["Sản phẩm", "Thiết kế"] } },
   {
     path: "/:pathMatch(.*)*",
     component: NotFound,

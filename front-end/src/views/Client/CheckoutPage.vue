@@ -474,7 +474,7 @@ export default {
       },
     ]);
 
-    const isLoggedIn = computed(() => store.getters['auth/isLoggedIn']);
+    const isLoggedIn = computed(() => (store && store.getters ? store.getters['auth/isLoggedIn'] : false));
 
     const subtotal = computed(() => {
       return cartItems.value.reduce((sum, item) => {

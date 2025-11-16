@@ -1,0 +1,41 @@
+package com.example.mobile_shop.controller.san_pham;
+
+import com.example.mobile_shop.dto.san_pham.BoNhoTrongDTO;
+import com.example.mobile_shop.dto.san_pham.ChiSoKhangBuiVaNuocDTO;
+import com.example.mobile_shop.service.san_pham.BoNhoTrongService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/bo-nho-trong")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+public class BoNhoTrongController {
+
+    private final BoNhoTrongService boNhoTrongService;
+
+    @Autowired
+    public BoNhoTrongController(BoNhoTrongService boNhoTrongService) {
+        this.boNhoTrongService = boNhoTrongService;
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<BoNhoTrongDTO>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(boNhoTrongService.getAllBoNhoTrongs(page, size));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<BoNhoTrongDTO>> getAllThuocTinh() {
+        return ResponseEntity.ok(boNhoTrongService.getAllBoNhoTrongsList());
+    }
+
+    @PostMapping
+    public ResponseEntity<BoNhoTrongDTO> addBoNhoTrong(@RequestBody BoNhoTrongDTO boNhoTrongDTO) {
+        return ResponseEntity.ok(boNhoTrongService.addBoNhoTrong(boNhoTrongDTO));
+    }
+}

@@ -1,0 +1,92 @@
+package com.example.mobile_shop.controller.tai_khoan;
+
+import com.example.mobile_shop.dto.nhan_vien.NhanVienDTO;
+import com.example.mobile_shop.dto.tai_khoan.TaiKhoanDTO;
+import com.example.mobile_shop.entity.NhanVien;
+import com.example.mobile_shop.entity.TaiKhoan;
+import com.example.mobile_shop.service.tai_khoan.TaiKhoanServices;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:8080"})
+@RequestMapping("tai-khoan")
+public class TaiKhoanController {
+    private final TaiKhoanServices taiKhoanServices;
+
+    public TaiKhoanController(TaiKhoanServices taiKhoanServices) {
+        this.taiKhoanServices = taiKhoanServices;
+    }
+
+    @PostMapping("/add")
+    public TaiKhoan addTaiKhoan(@RequestBody TaiKhoan taiKhoan){
+        return taiKhoanServices.add(taiKhoan);
+    }
+
+    @PostMapping("/requestOtp")
+    public ResponseEntity<?> requestOtp(@RequestBody TaiKhoanDTO taiKhoanDTO) {
+        try {
+            String message = taiKhoanServices.requestOTP(taiKhoanDTO);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/requestOtpMk")
+    public ResponseEntity<?> requestOtpMk(@RequestBody TaiKhoanDTO taiKhoanDTO) {
+        try {
+            String message = taiKhoanServices.requestOTPMk(taiKhoanDTO);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/verifyOtp")
+    public ResponseEntity<String> verifyOtp(@RequestBody TaiKhoanDTO taiKhoanDTO, @RequestParam("otp") String otp) {
+        try {
+            String response = taiKhoanServices.verifyOTP(taiKhoanDTO, otp);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/addTk")
+    public ResponseEntity<?> addTk(@RequestBody Map<String, String> request) {
+        try {
+            TaiKhoanDTO taiKhoanDTO = new TaiKhoanDTO();
+            taiKhoanDTO.setTenDangNhap(request.get("tenDangNhap"));
+            taiKhoanDTO.setEmail(request.get("email"));
+            taiKhoanDTO.setMatKhau(request.get("matKhau"));
+            String otp = request.get("otp");
+
+            TaiKhoan tk = taiKhoanServices.addTK(taiKhoanDTO, otp);
+            return new ResponseEntity<>(tk, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Lỗi khi thêm tài khoản: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/update-tk")
+    public ResponseEntity<?> updateTaiKhoan(@RequestBody TaiKhoanDTO taiKhoanDTO) {
+        try {
+            TaiKhoan updatedTaiKhoan = taiKhoanServices.UpdateTK(taiKhoanDTO.getEmail(), taiKhoanDTO);
+            return ResponseEntity.ok("Cập nhật tài khoản thành công!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<TaiKhoan> login(@RequestBody TaiKhoan taiKhoan) {
+        TaiKhoan tk = taiKhoanServices.login(taiKhoan.getTenDangNhap(), taiKhoan.getMatKhau());
+        if (tk != null) {
+            return ResponseEntity.ok(tk); // Trả về 200 với dữ liệu tài khoản
+        } else {
+            return ResponseEntity.status(401).body(null); // Trả về 401 nếu thất bại
+        }
+    }
+
+}

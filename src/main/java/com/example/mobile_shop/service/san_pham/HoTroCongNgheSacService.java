@@ -1,0 +1,39 @@
+package com.example.mobile_shop.service.san_pham;
+
+import com.example.mobile_shop.dto.san_pham.HoTroCongNgheSacDTO;
+import com.example.mobile_shop.dto.san_pham.NhaSanXuatDTO;
+import com.example.mobile_shop.entity.SanPham.HoTroCongNgheSac;
+import com.example.mobile_shop.entity.SanPham.NhaSanXuat;
+import com.example.mobile_shop.repository.san_pham.HoTroCongNgheSacRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class HoTroCongNgheSacService {
+
+    private final HoTroCongNgheSacRepository hoTroCongNgheSacRepository;
+
+    public HoTroCongNgheSacService(HoTroCongNgheSacRepository hoTroCongNgheSacRepository) {
+        this.hoTroCongNgheSacRepository = hoTroCongNgheSacRepository;
+    }
+
+    public Page<HoTroCongNgheSacDTO> getAllCongNgheSac(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return hoTroCongNgheSacRepository.findByDeletedFalse(pageable).map(this::toDTO);
+    }
+
+    public List<HoTroCongNgheSacDTO> getAllCongNgheSacList() {
+        return hoTroCongNgheSacRepository.findByDeletedFalse().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    private HoTroCongNgheSacDTO toDTO(HoTroCongNgheSac entity) {
+        return new HoTroCongNgheSacDTO(entity.getId(), entity.getMa(), entity.getCongSac(), entity.getCongNgheHoTro(), entity.getDeleted());
+    }
+}

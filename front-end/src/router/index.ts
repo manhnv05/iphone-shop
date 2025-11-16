@@ -5,6 +5,7 @@ import HomePage from "../views/Client/HomePage.vue";
 import CartPage from "../views/Client/CartPage.vue";
 import CheckoutPage from "../views/Client/CheckoutPage.vue";
 import ShopPage from "../views/Client/Shop.vue";
+import ProductDetail from "../views/Client/ProductDetail.vue";
 import About from "../views/Client/About.vue";
 import Blog from "../views/Client/Blog.vue";
 import Contact from "../views/Client/Contact.vue";
@@ -66,6 +67,12 @@ const routes: Array<RouteRecordRaw> = [
     path: "/shop",
     name: "ShopPage",
     component: ShopPage,
+    meta: { layout: "empty" },
+  },
+  {
+    path: "/product/:id",
+    name: "ProductDetail",
+    component: ProductDetail,
     meta: { layout: "empty" },
   },
   {

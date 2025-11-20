@@ -20,13 +20,8 @@
           <h2 class="text-2xl font-bold text-gray-900 mb-2">Đăng ký tài khoản</h2>
           <p class="text-gray-600 text-sm">Điền thông tin để tạo tài khoản mới</p>
         </div>
-
-        <!-- Social Register Buttons -->
-       
-
-        <!-- Divider -->
         
-
+        
         <form @submit.prevent="AddTK" class="space-y-4">
           <!-- Tên đăng nhập -->
           <div class="space-y-2">
@@ -262,16 +257,14 @@
             </svg>
           </button>
 
-          <div class="relative my-6">
-            <div class="absolute inset-0 flex items-center">
-              <span class="w-full border-t border-gray-200" />
-            </div>
-            <div class="relative flex justify-center text-xs uppercase">
-            <span class="bg-white px-2 text-gray-500 font-semibold">
-              Hoặc đăng ký với
-            </span>
-            </div>
+          <!-- Divider -->
+          <div class="flex items-center gap-3 my-2">
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <span class="text-gray-400 text-xs">hoặc đăng ký với</span>
+            <div class="flex-1 h-px bg-gray-200"></div>
           </div>
+
+
 
 
           <div class="space-y-3 mb-6">
@@ -301,18 +294,6 @@
               </svg>
               Đăng ký với Google
             </button>
-
-            <!-- Facebook Register Button -->
-            <!--          <button-->
-            <!--            type="button"-->
-            <!--            @click="registerWithFacebook"-->
-            <!--            class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 transition-all font-semibold text-gray-700 hover:border-gray-300"-->
-            <!--          >-->
-            <!--            <svg class="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">-->
-            <!--              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />-->
-            <!--            </svg>-->
-            <!--            Đăng ký với Facebook-->
-            <!--          </button>-->
           </div>
           
           
@@ -412,20 +393,11 @@ const chuyentrang = () => {
 };
 
 const registerWithGoogle = () => {
-  toastRef.value.kshowToast('info', 'Chức năng đang phát triển', 'Đăng ký Google sẽ sớm có mặt');
-
   // TODO: Implement Google OAuth Registration
   // Example:
-  // window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  window.location.href = 'http://localhost:8080/oauth2/authorization/google';
 };
 
-const registerWithFacebook = () => {
-  toastRef.value.kshowToast('info', 'Chức năng đang phát triển', 'Đăng ký Facebook sẽ sớm có mặt');
-
-  // TODO: Implement Facebook OAuth Registration
-  // Example:
-  // window.location.href = 'http://localhost:8080/oauth2/authorization/facebook';
-};
 
 function checktk() {
   let isValid = true;
@@ -459,6 +431,10 @@ function checktk() {
   }
 
   return isValid;
+}
+
+function loginWithGoogle() {
+  window.location.href = 'http://localhost:8080/oauth2/authorization/google';
 }
 
 async function sendOTP() {

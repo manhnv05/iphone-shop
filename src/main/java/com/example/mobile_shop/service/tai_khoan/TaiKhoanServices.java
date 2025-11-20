@@ -158,9 +158,22 @@ public class TaiKhoanServices {
         taiKhoan.setTenDangNhap(taiKhoanDTO.getTenDangNhap());
         taiKhoan.setMatKhau(passwordEncoder.encode(taiKhoanDTO.getMatKhau()));
         taiKhoan.setEmail(taiKhoanDTO.getEmail());
+        // Vì cột soDienThoai là NOT NULL + UNIQUE, sinh số ngẫu nhiên đảm bảo duy nhất nếu FE không cung cấp
+        taiKhoan.setSoDienThoai(generateUniquePhone());
         taiKhoan.setDeleted(false);
 
         return taiKhoanRepository.save(taiKhoan);
+    }
+
+    private String generateUniquePhone() {
+        java.util.Random rnd = new java.util.Random();
+        String phone;
+        int attempts = 0;
+        do {
+            phone = "09" + String.format("%08d", rnd.nextInt(100_000_000));
+            attempts++;
+        } while (taiKhoanRepository.existsBySoDienThoai(phone) && attempts < 10_000);
+        return phone;
     }
 
     public TaiKhoan findByTenDangNhap(String tenDangNhap) {

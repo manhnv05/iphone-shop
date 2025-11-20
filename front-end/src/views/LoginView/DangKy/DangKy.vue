@@ -302,7 +302,7 @@
         <!-- Login Link -->
         <div class="mt-6 text-center text-sm">
           <span class="text-gray-600">Đã có tài khoản? </span>
-          <router-link to="/" class="text-orange-600 hover:text-orange-700 font-bold transition-colors">
+          <router-link to="/login" class="text-orange-600 hover:text-orange-700 font-bold transition-colors">
             Đăng nhập ngay
           </router-link>
         </div>

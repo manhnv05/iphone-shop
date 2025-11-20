@@ -155,9 +155,9 @@
               </svg>
               Settings</a
             >
-            <router-link
-              to="/"
-              class="flex px-4 py-2 rounded-md text-sm text-gray-700 hover:bg-indigo-600 hover:text-white"
+            <button
+              @click="handleLogout"
+              class="flex w-full text-left px-4 py-2 rounded-md text-sm text-gray-700 hover:bg-indigo-600 hover:text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -173,8 +173,8 @@
                   d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                 />
               </svg>
-              Log out</router-link
-            >
+              Log out
+            </button>
           </div>
         </transition>
       </div>
@@ -183,12 +183,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import { useSidebar } from "../hooks/useSidebar";
+import { useRouter } from "vue-router";
+import axios from "axios";
 
 const dropdownOpen = ref(false);
 const { isOpen } = useSidebar();
 const notificationOpen = ref(false);
+
+const router = useRouter();
+const appLogout: any = inject('logout');
+
+const handleLogout = async () => {
+  try {
+    await axios.post('http://localhost:8080/tai-khoan/logout', null, { withCredentials: true });
+  } catch (e) {
+    // ignore network errors; still clear local state
+    console.warn('Logout request failed or not necessary, proceeding to clear state');
+  } finally {
+    if (appLogout) appLogout();
+    dropdownOpen.value = false;
+    // Send user to login; interceptor will also redirect on any 401 later
+    router.replace('/login');
+  }
+};
 </script>
 
 <style scoped>

@@ -245,22 +245,22 @@
       </nav>
 
       <!-- Footer User Info -->
-      <div class="absolute bottom-0 left-0 right-0 p-4 bg-gray-50 border-t border-gray-200">
-        <div class="flex items-center space-x-3 px-2">
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
-            MN
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-gray-800 truncate">manhnv05</p>
-            <p class="text-xs text-gray-500">Administrator</p>
-          </div>
-          <button class="p-2 hover:bg-gray-200 rounded-lg transition-colors" title="Đăng xuất">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-          </button>
-        </div>
-      </div>
+<!--      <div class="absolute bottom-0 left-0 right-0 p-4 bg-gray-50 border-t border-gray-200">-->
+<!--        <div class="flex items-center space-x-3 px-2">-->
+<!--          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white font-bold text-sm shadow-md">-->
+<!--            MN-->
+<!--          </div>-->
+<!--          <div class="flex-1 min-w-0">-->
+<!--            <p class="text-sm font-semibold text-gray-800 truncate">manhnv05</p>-->
+<!--            <p class="text-xs text-gray-500">Administrator</p>-->
+<!--          </div>-->
+<!--          <button class="p-2 hover:bg-gray-200 rounded-lg transition-colors" title="Đăng xuất">-->
+<!--            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />-->
+<!--            </svg>-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
   </div>
 </template>

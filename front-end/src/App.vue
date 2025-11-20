@@ -1,4 +1,3 @@
-<!-- Template chính -->
 <template>
   <div class="app-container">
     <component :is="layout">
@@ -9,30 +8,65 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref, provide, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import FooterPage from "@/components/FooterPage.vue";
 
+// --- User State Management ---
+const user = ref(null);
+
+const login = (userData: any) => {
+  user.value = userData;
+  localStorage.setItem('user', JSON.stringify(userData));
+};
+
+const logout = () => {
+  user.value = null;
+  localStorage.removeItem('user');
+  // No longer need to redirect, the UI will update automatically
+};
+
+// Provide user state and methods to all child components
+provide('user', user);
+provide('login', login);
+provide('logout', logout);
+
+// --- Layout Management ---
 const defaultLayout = 'default'
-const { currentRoute } = useRouter()
+const router = useRouter()
+const { currentRoute } = router
 
 const layout = computed(
   () => `${currentRoute.value.meta.layout || defaultLayout}-layout`
 )
+
+// --- Check for logged-in user on app startup ---
+onMounted(() => {
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    try {
+      user.value = JSON.parse(storedUser);
+    } catch (e) {
+      console.error('Failed to parse user from localStorage', e);
+      localStorage.removeItem('user');
+    }
+  }
+});
+
 </script>
 
 <style scoped>
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Chiều cao tối thiểu bằng toàn bộ viewport */
+  min-height: 100vh;
 }
 
 router-view {
-  flex: 1 0 auto; /* Nội dung chính sẽ chiếm không gian còn lại */
+  flex: 1 0 auto;
 }
 
 footer-page {
-  flex-shrink: 0; /* Footer không bị co lại */
+  flex-shrink: 0;
 }
 </style>

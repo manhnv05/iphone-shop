@@ -283,14 +283,16 @@
 </template>
 
 <script>
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, nextTick, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import axios from 'axios';
 
 export default {
   name: 'ClientHeader',
   setup() {
     const router = useRouter();
     const route = useRoute();
+    const appLogout = inject('logout');
 
     // State
     const searchQuery = ref('');
@@ -377,11 +379,17 @@ export default {
       showMobileMenu.value = !showMobileMenu.value;
     };
 
-    const logout = () => {
-      // Handle logout
-      isLoggedIn.value = false;
-      showUserMenu.value = false;
-      router.push('/');
+    const logout = async () => {
+      try {
+        await axios.post('http://localhost:8080/tai-khoan/logout', null, { withCredentials: true });
+      } catch (e) {
+        console.warn('Logout request failed, proceed to clear local state');
+      } finally {
+        if (appLogout) appLogout();
+        isLoggedIn.value = false;
+        showUserMenu.value = false;
+        router.replace('/login');
+      }
     };
 
     const isActiveRoute = (path) => {

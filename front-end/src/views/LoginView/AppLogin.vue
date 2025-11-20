@@ -260,14 +260,8 @@ const showToast = (message, description = '', type = 'success') => {
 };
 
 const loginWithGoogle = () => {
-  showToast(
-    'Chức năng đang phát triển',
-    'Đăng nhập Google sẽ sớm có mặt',
-    'info'
-  );
-
-  // TODO: Implement Google OAuth
-  // window.location.href = 'YOUR_BACKEND_URL/auth/google';
+  // Redirect to Backend OAuth2 authorization endpoint (Google)
+  window.location.href = 'http://localhost:8080/oauth2/authorization/google';
 };
 
 const loginWithFacebook = () => {

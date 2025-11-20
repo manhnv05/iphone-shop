@@ -26,6 +26,36 @@ public class TaiKhoanServices {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Authenticates a user and upgrades their password if it's in plain text.
+     * @param tenDangNhap The username.
+     * @param rawPassword The plain text password from the login form.
+     * @return The TaiKhoan entity if authentication is successful, otherwise null.
+     */
+    public TaiKhoan authenticateAndUpgradePassword(String tenDangNhap, String rawPassword) {
+        TaiKhoan tk = taiKhoanRepository.findByTenDangNhap(tenDangNhap);
+        if (tk == null) {
+            return null; // User not found
+        }
+
+        // Step 1: Try the secure, standard way first.
+        if (passwordEncoder.matches(rawPassword, tk.getMatKhau())) {
+            return tk; // Password is correct and already hashed.
+        }
+
+        // Step 2: If the standard way fails, try comparing plain text (for legacy passwords).
+        if (tk.getMatKhau().equals(rawPassword)) {
+            // The password is correct but not hashed. Upgrade it now.
+            tk.setMatKhau(passwordEncoder.encode(rawPassword));
+            taiKhoanRepository.save(tk);
+            return tk; // Login successful, password has been upgraded.
+        }
+
+        // If both checks fail, the password is incorrect.
+        return null;
+    }
+
+
     public String MaTaiKhoan() {
         String maxMaTK = taiKhoanRepository.findMaxMaTK();
         if (maxMaTK != null) {
@@ -43,15 +73,7 @@ public class TaiKhoanServices {
 
     public String findById(Integer idTK) {
         Optional<TaiKhoan> tk = taiKhoanRepository.findById(idTK);
-        return tk != null ? tk.get().getEmail() : null;
-    }
-
-    public TaiKhoan login(String tenDangNhap, String matKhau) {
-        TaiKhoan tk = taiKhoanRepository.findByTenDangNhap(tenDangNhap);
-        if (tk != null && matKhau.equals(tk.getMatKhau())) {
-            return tk;
-        }
-        return null;
+        return tk.isPresent() ? tk.get().getEmail() : null;
     }
 
     private String RandomSDT() {
@@ -128,7 +150,7 @@ public class TaiKhoanServices {
         otpStorage.remove(taiKhoanDTO.getEmail());
 
         QuyenHan quyenHan = new QuyenHan();
-        quyenHan.setId(3); // Ví dụ: STAFF
+        quyenHan.setId(3); // Ví dụ: CUSTOMER
 
         TaiKhoan taiKhoan = new TaiKhoan();
         taiKhoan.setIdQuyenHan(quyenHan);
@@ -151,7 +173,7 @@ public class TaiKhoanServices {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản!"));
 
         if (taiKhoanDTO.getMatKhau() != null && !taiKhoanDTO.getMatKhau().trim().isEmpty()) {
-            String encodedPassword = taiKhoanDTO.getMatKhau();
+            String encodedPassword = passwordEncoder.encode(taiKhoanDTO.getMatKhau());
             taiKhoan.setMatKhau(encodedPassword);
         } else {
             throw new IllegalArgumentException("Mật khẩu không được để trống!");

@@ -50,6 +50,15 @@ import MauSac from "@/views/Products/Other/MauSac.vue";
 import Pin from "@/views/Products/Other/PinSanPham.vue";
 import Sim from "@/views/Products/Other/SimSanPham.vue";
 import ThietKe from "@/views/Products/Other/ThietKe.vue";
+import EditSanPham from "@/views/Products/SanPham/EditSanPham.vue";
+import SanPhamChiTiet from "@/views/Products/SanPham/SanPhamChiTiet.vue";
+import EditSanPhamChiTiet from "@/views/Products/SanPham/EditSanPhamChiTiet.vue";
+import AddChiTietSanPham from "@/views/Products/SanPham/AddChiTietSanPham.vue";
+import AddNhaSanXuat from "@/views/Products/Manufacturer/ManufacturerAdd.vue";
+import EditNhaSanXuat from "@/views/Products/Manufacturer/ManufacturerEdit.vue";
+import AddScreen from "@/views/Products/Screen/AddCongNgheManHinh.vue";
+import EditScreen from "@/views/Products/Screen/EditCongNgheManHinh.vue";
+
 
 const routes: Array<RouteRecordRaw> = [
   // Base redirect to avoid NotFound when using '/'
@@ -98,8 +107,12 @@ const routes: Array<RouteRecordRaw> = [
   // Product Routes (ADMIN ONLY)
   { path: "/products", name: "products", component: SanPham, meta: { breadcrumb: ["Sản phẩm", "Danh sách sản phẩm"], roles: ['ADMIN'] } },
   { path: "/manufacturer", name: "manufacturer", component: NhaSanXuat, meta: { breadcrumb: ["Sản phẩm", "Nhà sản xuất"], roles: ['ADMIN'] } },
+  { path: "/manufacturer/add", name: "addmanufacturer", component: AddNhaSanXuat, meta: { breadcrumb: ["Sản phẩm", "Nhà sản xuất", "Thêm Nhà Sản Xuất"], roles: ['ADMIN'] } },
+  { path: "/manufacturer/edit/:id", name: "editmanufacturer", component: EditNhaSanXuat, meta: { breadcrumb: ["Sản phẩm", "Nhà sản xuất", "Sửa Nhà Sản Xuất"], roles: ['ADMIN'] } },
   { path: "/camera-module", name: "cameraModule", component: CumCamera, meta: { breadcrumb: ["Sản phẩm", "Cụm Camera"], roles: ['ADMIN'] } },
   { path: "/screens/technology", name: "screenTechnology", component: CongNgheManHinh, meta: { breadcrumb: ["Sản phẩm", "Công nghệ màn hình"], roles: ['ADMIN'] } },
+  { path: "/screens/technology/add", name: "addscreenTechnology", component: AddScreen, meta: { breadcrumb: ["Sản phẩm", "Công nghệ màn hình", "Thêm Công nghệ màn hình"], roles: ['ADMIN'] } },
+  { path: "/screens/technology/edit/:id", name: "editscreenTechnology", component: EditScreen, meta: { breadcrumb: ["Sản phẩm", "Công nghệ màn hình", "Sửa Công nghệ màn hình"], roles: ['ADMIN'] } },
   { path: "/charging/tech-support", name: "chargingTechSupport", component: HoTroCongNgheSac, meta: { breadcrumb: ["Sản phẩm", "Hỗ trợ sạc"], roles: ['ADMIN'] } },
   { path: "/ram", name: "ram", component: Ram, meta: { breadcrumb: ["Sản phẩm", "RAM"], roles: ['ADMIN'] } },
   { path: "/internal-storage", name: "internalStorage", component: BoNhoTrong, meta: { breadcrumb: ["Sản phẩm", "Bộ nhớ trong"], roles: ['ADMIN'] } },
@@ -113,6 +126,12 @@ const routes: Array<RouteRecordRaw> = [
   { path: "/battery", name: "battery", component: Pin, meta: { breadcrumb: ["Sản phẩm", "Pin"], roles: ['ADMIN'] } },
   { path: "/sim", name: "sim", component: Sim, meta: { breadcrumb: ["Sản phẩm", "SIM"], roles: ['ADMIN'] } },
   { path: "/design", name: "design", component: ThietKe, meta: { breadcrumb: ["Sản phẩm", "Thiết kế"], roles: ['ADMIN'] } },
+
+  // --- Product CRUD + Details Routes (ADMIN ONLY) ---
+  { path: "/products/add", name: "AddSanPham", component: AddChiTietSanPham, meta: { breadcrumb: ["Sản phẩm", "Thêm sản phẩm"], roles: ['ADMIN'] } },
+  { path: "/products/edit/:id", name: "EditSanPham", component: EditSanPham, props: true, meta: { breadcrumb: (route: any) => ["Sản phẩm", `Sửa sản phẩm #${route.params.id}`], roles: ['ADMIN'] } },
+  { path: "/products/:id", name: "SanPhamChiTiet", component: SanPhamChiTiet, props: true, meta: { breadcrumb: (route: any) => ["Sản phẩm", `Chi tiết sản phẩm #${route.params.id}`], roles: ['ADMIN'] } },
+  { path: "/products/details/:productId/edit/:detailId", name: "EditSanPhamChiTiet", component: EditSanPhamChiTiet, props: true, meta: { breadcrumb: (route: any) => ["Sản phẩm", `Sản phẩm #${route.params.productId}`, `Sửa chi tiết #${route.params.detailId}`], roles: ['ADMIN'] } },
 
   // --- 404 Not Found ---
   { path: "/:pathMatch(.*)*", component: NotFound },
